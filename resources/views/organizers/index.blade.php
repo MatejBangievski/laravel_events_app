@@ -18,7 +18,7 @@
                 <td>{{ $organizer->phone }}</td>
                 <td>
                     <a href="{{ route('organizers.show', $organizer) }}" class="btn btn-info btn-sm">Show</a>
-                    <a href="{{ route('organizers.edit', $organizer) }}" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="{{ route('organizers.edit', $organizer) }}" class="btn btn-info btn-sm">Edit</a>
                     <form action="{{ route('organizers.destroy', $organizer) }}" method="POST" style="display:inline-block;">
                         @csrf
                         @method('DELETE')

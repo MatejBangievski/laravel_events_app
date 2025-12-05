@@ -10,8 +10,18 @@ class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::with('organizer')->paginate(5);
-        return view('events.index', compact('events'));
+//        $events = Event::with('organizer')->paginate(5);
+//        return view('events.index', compact('events'));
+        $search = request('search');
+
+        $events = Event::with('organizer')
+            ->when($search, function ($query, $search) {
+                $query->where('name', 'like', "%{$search}%");
+            })
+            ->paginate(5)
+            ->appends(['search' => $search]);
+
+        return view('events.index', compact('events', 'search'));
     }
 
     public function create()

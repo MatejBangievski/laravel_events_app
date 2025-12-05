@@ -2,6 +2,19 @@
 @section('content')
     <h2>Events</h2>
     <a href="{{ route('events.create') }}" class="btn btn-primary mb-3">Add Event</a>
+
+    <form method="GET" action="{{ route('events.index') }}" class="mb-3 d-flex" style="max-width: 300px;">
+        <input
+            type="text"
+            name="search"
+            class="form-control me-2"
+            placeholder="Search by name..."
+            value="{{ request('search') }}"
+        >
+        <button class="btn btn-secondary">Search</button>
+    </form>
+
+
     <table class="table table-bordered">
         <tr>
             <th>ID</th>
@@ -18,7 +31,7 @@
                 <td>{{ $event->organizer->full_name }}</td>
                 <td>
                     <a href="{{ route('events.show', $event) }}" class="btn btn-info btn-sm">Show</a>
-                    <a href="{{ route('events.edit', $event) }}" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="{{ route('events.edit', $event) }}" class="btn btn-info btn-sm">Edit</a>
                     <form action="{{ route('events.destroy', $event) }}" method="POST" style="display:inline-block;">
                         @csrf
                         @method('DELETE')

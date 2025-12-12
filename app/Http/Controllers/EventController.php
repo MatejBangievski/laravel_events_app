@@ -33,7 +33,8 @@ class EventController extends Controller
     public function store(StoreEventRequest $request)
     {
         Event::create($request->validated());
-        return redirect()->route('events.index')->with('success', 'Настанот е успешно креиран.');
+//        return redirect()->route('events.index')->with('success', 'Настанот е успешно креиран.');
+        return redirect()->route('events.index');
     }
 
     public function show(Event $event)
@@ -50,12 +51,14 @@ class EventController extends Controller
     public function update(StoreEventRequest $request, Event $event)
     {
         $event->update($request->validated());
-        return redirect()->route('events.index')->with('success', 'Настанот е успешно ажуриран.');
+//        return redirect()->route('events.index')->with('success', 'Настанот е успешно ажуриран.');
+        return redirect()->route('events.index');
     }
 
     public function destroy(Event $event)
     {
         $event->delete();
-        return redirect()->route('events.index')->with('success', 'Настанот е избришан.');
+//        return redirect()->route('events.index')->with('success', 'Настанот е избришан.');
+        return redirect()->route('events.index');
     }
 }

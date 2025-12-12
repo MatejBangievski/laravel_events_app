@@ -21,7 +21,8 @@ class OrganizerController extends Controller
     public function store(StoreOrganizerRequest $request)
     {
         Organizer::create($request->validated());
-        return redirect()->route('organizers.index')->with('success', 'Организаторот е успешно креиран.');
+//        return redirect()->route('organizers.index')->with('success', 'Организаторот е успешно креиран.');
+        return redirect()->route('organizers.index');
     }
 
     public function show(Organizer $organizer)
@@ -38,12 +39,14 @@ class OrganizerController extends Controller
     public function update(StoreOrganizerRequest $request, Organizer $organizer)
     {
         $organizer->update($request->validated());
-        return redirect()->route('organizers.index')->with('success', 'Организаторот е успешно ажуриран.');
+//        return redirect()->route('organizers.index')->with('success', 'Организаторот е успешно ажуриран.');
+        return redirect()->route('organizers.index');
     }
 
     public function destroy(Organizer $organizer)
     {
         $organizer->delete();
-        return redirect()->route('organizers.index')->with('success', 'Организаторот е избришан.');
+//        return redirect()->route('organizers.index')->with('success', 'Организаторот е избришан.');
+        return redirect()->route('organizers.index');
     }
 }

@@ -3,13 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreOrganizerRequest;
-use App\Models\Organizer;
+use App\Repositories\OrganizerRepositoryInterface;
+
 
 class OrganizerController extends Controller
 {
+    protected OrganizerRepositoryInterface $organizerRepository;
+
+    public function __construct(OrganizerRepositoryInterface $organizerRepository)
+    {
+        $this->organizerRepository = $organizerRepository;
+    }
+
     public function index()
     {
-        $organizers = Organizer::paginate(5);
+        $organizers = $this->organizerRepository->paginate();
         return view('organizers.index', compact('organizers'));
     }
 
@@ -20,33 +28,38 @@ class OrganizerController extends Controller
 
     public function store(StoreOrganizerRequest $request)
     {
-        Organizer::create($request->validated());
-//        return redirect()->route('organizers.index')->with('success', 'Организаторот е успешно креиран.');
+        $this->organizerRepository->create($request->validated());
+
         return redirect()->route('organizers.index');
     }
 
-    public function show(Organizer $organizer)
+    public function show($id)
     {
+        $organizer = $this->organizerRepository->find($id);
         $events = $organizer->events()->paginate(10);
+
         return view('organizers.show', compact('organizer', 'events'));
     }
 
-    public function edit(Organizer $organizer)
+    public function edit($id)
     {
+        $organizer = $this->organizerRepository->find($id);
         return view('organizers.edit', compact('organizer'));
     }
 
-    public function update(StoreOrganizerRequest $request, Organizer $organizer)
+    public function update(StoreOrganizerRequest $request, $id)
     {
-        $organizer->update($request->validated());
-//        return redirect()->route('organizers.index')->with('success', 'Организаторот е успешно ажуриран.');
+        $organizer = $this->organizerRepository->find($id);
+        $this->organizerRepository->update($organizer, $request->validated());
+
         return redirect()->route('organizers.index');
     }
 
-    public function destroy(Organizer $organizer)
+    public function destroy($id)
     {
-        $organizer->delete();
-//        return redirect()->route('organizers.index')->with('success', 'Организаторот е избришан.');
+        $organizer = $this->organizerRepository->find($id);
+        $this->organizerRepository->delete($organizer);
+
         return redirect()->route('organizers.index');
     }
 }

@@ -3,62 +3,71 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreEventRequest;
-use App\Models\Event;
-use App\Models\Organizer;
+use App\Repositories\EventRepositoryInterface;
+use App\Repositories\OrganizerRepositoryInterface;
 
 class EventController extends Controller
 {
+    protected EventRepositoryInterface $eventRepository;
+    protected OrganizerRepositoryInterface $organizerRepository;
+
+    public function __construct(
+        EventRepositoryInterface $eventRepository,
+        OrganizerRepositoryInterface $organizerRepository
+    ) {
+        $this->eventRepository = $eventRepository;
+        $this->organizerRepository = $organizerRepository;
+    }
+
     public function index()
     {
-//        $events = Event::with('organizer')->paginate(5);
-//        return view('events.index', compact('events'));
         $search = request('search');
 
-        $events = Event::with('organizer')
-            ->when($search, function ($query, $search) {
-                $query->where('name', 'like', "%{$search}%");
-            })
-            ->paginate(5)
-            ->appends(['search' => $search]);
+        $events = $this->eventRepository->queryWithOrganizer($search);
 
         return view('events.index', compact('events', 'search'));
     }
 
     public function create()
     {
-        $organizers = Organizer::all();
+        $organizers = $this->organizerRepository->all();
         return view('events.create', compact('organizers'));
     }
 
     public function store(StoreEventRequest $request)
     {
-        Event::create($request->validated());
-//        return redirect()->route('events.index')->with('success', 'Настанот е успешно креиран.');
+        $this->eventRepository->create($request->validated());
+
         return redirect()->route('events.index');
     }
 
-    public function show(Event $event)
+    public function show($id)
     {
+        $event = $this->eventRepository->find($id);
         return view('events.show', compact('event'));
     }
 
-    public function edit(Event $event)
+    public function edit($id)
     {
-        $organizers = Organizer::all();
+        $event = $this->eventRepository->find($id);
+        $organizers = $this->organizerRepository->all();
+
         return view('events.edit', compact('event', 'organizers'));
     }
 
-    public function update(StoreEventRequest $request, Event $event)
+    public function update(StoreEventRequest $request, $id)
     {
-        $event->update($request->validated());
-//        return redirect()->route('events.index')->with('success', 'Настанот е успешно ажуриран.');
+        $event = $this->eventRepository->find($id);
+        $this->eventRepository->update($event, $request->validated());
+
         return redirect()->route('events.index');
     }
 
-    public function destroy(Event $event)
+    public function destroy($id)
     {
-        $event->delete();
-//        return redirect()->route('events.index')->with('success', 'Настанот е избришан.');
+        $event = $this->eventRepository->find($id);
+        $this->eventRepository->delete($event);
+
         return redirect()->route('events.index');
     }
 }
